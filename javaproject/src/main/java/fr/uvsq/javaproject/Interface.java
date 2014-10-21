@@ -1,4 +1,4 @@
-package tuto;
+package fr.uvsq.javaproject;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

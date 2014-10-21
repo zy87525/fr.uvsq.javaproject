@@ -1,27 +1,26 @@
-package tuto;
+package fr.uvsq.javaproject;
 
 import java.io.InputStream;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
 
-public class Logic {
-	
-	public void readRDF(RDF rdf){
-		
+public class RDF {
+	private String FileName;
+	List<Tuple> tuple = new ArrayList<Tuple>();
+
+	public RDF(String fileName) {
+		this.setFileName(fileName);
 		Tuple tuple;
-		// cr閑r un mod鑜e vide
 		Model model = ModelFactory.createDefaultModel();
 		
 		// utiliser le FileManager pour trouver le fichier d'entr閑
-		InputStream inputFileName = FileManager.get().open(rdf.getFileName());
+		InputStream inputFileName = FileManager.get().open(this.getFileName());
 		if (inputFileName == null) {
 		    throw new IllegalArgumentException("Fichier: " + inputFileName + " non trouv�");
 		}
@@ -39,21 +38,35 @@ public class Logic {
             tuple.setPredicat(stmt.getPredicate()); // get the predicate
             tuple.setNode(stmt.getObject());    // get the object
             
-            rdf.add(tuple);            
+            this.add(tuple);            
            
 		}
-		
-		for(Tuple t:rdf.tuple){
+	}
 
-			 System.out.print(t.getRessource().toString());
-	         System.out.print(" " + t.getPredicat().toString() + " ");
-	         if (t.getNode() instanceof Resource) {
-	             System.out.print(t.getNode().toString()+"zebi");
-	         } else {
-	             // object is a literal
-	             System.out.print(" \"" + t.getNode().toString() + "\"");
-	         }
-	         System.out.println(" .");
+	public Object[][] getTupleArray() {
+		Object[][] tArray = new Object[this.tuple.size()][3];
+		int i = 0;
+		for (Tuple t : this.tuple) {
+			tArray[i][0] = t.getRessource();
+			tArray[i][1] = t.getPredicat().getLocalName();
+			tArray[i][2] = t.getNode();
+			i++;
 		}
+		return tArray;
+	}
+
+	public RDF() {
+	}
+
+	public String getFileName() {
+		return FileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.FileName = fileName;
+	}
+
+	public void add(Tuple tuple) {
+		this.tuple.add(tuple);
 	}
 }
